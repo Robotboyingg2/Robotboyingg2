@@ -1,3 +1,78 @@
+local Library = loadstring(game:HttpGet("https://pastebin.com/raw/vff1bQ9F"))()
+local Window = Library.CreateLib("The collector", "Synapse")
+
+
+game:GetService("StarterGui"):SetCore("SendNotification",{
+    Title="The collector";
+    Text="The collector has been injected";
+    Duration=3;
+})
+
+-- Windows 
+local Combat = Window:NewTab("Combat")
+local Movement = Window:NewTab("Movement")
+local Visuals = Window:NewTab("Visuals")
+local Utility = Window:NewTab("Utility")
+
+-- Section 
+local CombatSection = Combat:NewSection("Combat")
+local MovementSection = Movement:NewSection("Movement")
+local VisualsSection = Visuals:NewSection("Visuals")
+local UtilitySection = Utility:NewSection("Utility")
+
+
+-- Combat 
+
+CombatSection:NewToggle("Velocity", "Velocity", function(state)
+	if state then
+		KnockbackTable["kbDirectionStrength"] = 0
+		KnockbackTable["kbUpwardStrength"] = 0
+	else
+		KnockbackTable["kbDirectionStrength"] = 100
+		KnockbackTable["kbUpwardStrength"] = 100
+	end
+end)
+
+
+
+-- Movement
+
+MovementSection:NewKeybind("Flight", "Flight", Enum.KeyCode.R, function()
+	game.Workspace.Gravity = 0
+	wait(2.4)
+	game.Workspace.Gravity = 192.6
+end)
+
+MovementSection:NewKeybind("deathTp", "KeybindInfo", Enum.KeyCode.P, function()
+	local lplr = game:GetService("Players").LocalPlayer
+                    local NewPos = lplr.Character:FindFirstChild("HumanoidRootPart").CFrame
+                    local plr = game:GetService("Players").LocalPlayer
+                    lplr.Character:FindFirstChild("Humanoid").Health = 0 
+                    lplr.CharacterAdded:wait()
+                    spawn(function()
+                        repeat
+                        task.wait()
+                            until (lplr.Character:WaitForChild("HumanoidRootPart"))
+                        end)
+                        local TS = game:GetService("TweenService")
+                            for i = 1, 1 do
+                                task.wait()
+                                    local Prim = lplr.Character and lplr.Character:WaitForChild("HumanoidRootPart").CFrame
+                                        local tween = TS:Create(lplr.Character:WaitForChild("HumanoidRootPart"), TweenInfo.new(1), {CFrame = (NewPos)})
+                                        tween:play()
+                                        tween.Completed:Wait()
+                          end
+end)
+
+-- Visuals
+
+VisualsSection:NewKeybind("Toggle Ui", "Toggle Ui", Enum.KeyCode.RightShift, function()
+	Library:ToggleUI()
+end)
+
+
+-- Utility
+
 UtilitySection:NewDropdown("PlayerAnnoyer", "DropdownInf", {"Party popper", "DragonBreath", "Yuzi"}, function(opt)
 	if opt == "Party popper" then
 		game:GetService("ReplicatedStorage")["events-@easy-games/game-core:shared/game-core-networking@getEvents.Events"].useAbility:FireServer("PARTY_POPPER")
@@ -16,4 +91,48 @@ UtilitySection:NewDropdown("PlayerAnnoyer", "DropdownInf", {"Party popper", "Dra
 	if opt == "Yuzi" then
 		game:GetService("ReplicatedStorage"):FindFirstChild("events-@easy-games/game-core:shared/game-core-networking@getEvents.Events").useAbility:FireServer(unpack(args))
 	end
+end)
+
+UtilitySection:NewToggle("Antivoid", "Antivoid", function(state)
+	if state then
+		local e = Instance.new("Part",workspace)
+		e.Size = Vector3.new(99999999,2,999999999999)
+		e.Position = Vector3.new(0,20,0)
+		e.Anchored = true
+		e.BrickColor = BrickColor.new("Royal purple")
+		e.Transparency = 0.5
+
+
+		local function PlayerTouched(Part)
+			local Parent = Part.Parent
+			if game.Players:GetPlayerFromCharacter(Parent) then
+				for i = 1,3 do wait()
+					Parent.HumanoidRootPart.CFrame = Parent.HumanoidRootPart.CFrame + Vector3.new(0,25,0)
+				end
+
+			end
+		end
+
+		e.Touched:connect(PlayerTouched)
+	else
+		e:Destroy()
+	end
+end)
+
+local spam = "The collector on top " --Default spam here
+local SpammerEnabled = false
+
+UtilitySection:NewToggle("ChatSpammer", "", function(state)
+    if state then
+        SpammerEnabled = true
+        repeat task.wait(1)
+            game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(spam,"All")
+        until not SpammerEnabled
+    else
+        SpammerEnabled = false
+    end
+end)
+
+UtilitySection:NewTextBox("Chat spammer text", "allows this to go to chat spammer", function(txt)
+    spam = txt
 end)
