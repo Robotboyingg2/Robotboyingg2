@@ -1,0 +1,19 @@
+UtilitySection:NewDropdown("PlayerAnnoyer", "DropdownInf", {"Party popper", "DragonBreath", "Yuzi"}, function(opt)
+	if opt == "Party popper" then
+		game:GetService("ReplicatedStorage")["events-@easy-games/game-core:shared/game-core-networking@getEvents.Events"].useAbility:FireServer("PARTY_POPPER")
+	end
+
+	if opt == "DragonBreath" then
+		local args = {
+			[1] = {
+				["player"] = game:GetService("Players").LocalPlayer
+			}
+		}
+
+		game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.DragonBreath:FireServer(unpack(args))
+	end
+
+	if opt == "Yuzi" then
+		game:GetService("ReplicatedStorage"):FindFirstChild("events-@easy-games/game-core:shared/game-core-networking@getEvents.Events").useAbility:FireServer(unpack(args))
+	end
+end)
